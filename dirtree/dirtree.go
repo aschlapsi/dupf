@@ -1,4 +1,4 @@
-package main
+package dirtree
 
 import (
 	"crypto/md5"
@@ -8,23 +8,27 @@ import (
 	"path/filepath"
 )
 
-type FileInfo struct {
-	Path string
-	Hash []byte
+type DirTree struct {
+	RootPath string
+	Files []*FileInfo
 }
 
-func (fi *FileInfo) GetHashstring() string {
-	return fmt.Sprintf("%x", fi.Hash)
+func NewDirTree(rootDir string) *DirTree {
+	return &DirTree{RootPath: rootDir, Files: walkDirectory(rootDir)}
 }
 
-func WalkDirectory(rootDir string) (result []FileInfo) {
+func (dt *DirTree) FileCount() int {
+	return len((*dt).Files)
+}
+
+func walkDirectory(rootDir string) (result []*FileInfo) {
 	walker := func(path string, fileInfo os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 
 		if !fileInfo.IsDir() {
-			result = append(result, newFileInfo(path))
+			result = append(result, NewFileInfo(path))
 		}
 
 		return nil
@@ -34,8 +38,17 @@ func WalkDirectory(rootDir string) (result []FileInfo) {
 	return
 }
 
-func newFileInfo(path string) FileInfo {
-	return FileInfo{Path: path, Hash: getHash(path)}
+type FileInfo struct {
+	Path string
+	Hash []byte
+}
+
+func NewFileInfo(path string) *FileInfo {
+	return &FileInfo{Path: path, Hash: getHash(path)}
+}
+
+func (fi *FileInfo) GetHashstring() string {
+	return fmt.Sprintf("%x", fi.Hash)
 }
 
 var hash = md5.New()
