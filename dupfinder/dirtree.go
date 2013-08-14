@@ -41,10 +41,11 @@ func walkDirectory(rootDir string) (result []*FileInfo) {
 type FileInfo struct {
 	path string
 	hash []byte
+	size int64
 }
 
 func NewFileInfo(path string) *FileInfo {
-	return &FileInfo{path: path, hash: getHash(path)}
+	return &FileInfo{path: path, hash: getHash(path), size: getFileSize(path)}
 }
 
 func (fi *FileInfo) GetHashstring() string {
@@ -52,6 +53,15 @@ func (fi *FileInfo) GetHashstring() string {
 }
 
 var hash = md5.New()
+
+func getFileSize(path string) int64 {
+	stat, err := os.Lstat(path)
+	if err != nil {
+		return 0
+	}
+
+	return stat.Size()	
+}
 
 func getHash(path string) []byte {
 	hash.Reset()
