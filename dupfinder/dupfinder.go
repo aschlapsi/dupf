@@ -1,28 +1,24 @@
 package dupfinder
 
-import (
-	"github.com/aschlapsi/dupf/dirtree"
-)
-
 type Duplicates struct {
 	Items []*DuplicateItems
 }
 
 type DuplicateItems struct {
 	Key string
-	Files []*dirtree.FileInfo
+	Files []*FileInfo
 }
 
-func NewDuplicates(dirTree *dirtree.DirTree) *Duplicates {
+func NewDuplicates(dirTree *DirTree) *Duplicates {
 	duplicates := &Duplicates{Items: make([]*DuplicateItems, 0)}
-	fileMap := make(map[string][]*dirtree.FileInfo)
+	fileMap := make(map[string][]*FileInfo)
 
 	for _, fi := range dirTree.Files {
 		hashstr := fi.GetHashstring()
 
 		files, ok := fileMap[hashstr]
 		if !ok {
-			files = make([]*dirtree.FileInfo, 0)
+			files = make([]*FileInfo, 0)
 			fileMap[hashstr] = files
 		}
 		fileMap[hashstr] = append(files, fi)

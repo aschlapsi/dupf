@@ -1,37 +1,11 @@
 package dupfinder
 
 import (
-	"fmt"
-	"reflect"
 	"testing"
-
-	"github.com/aschlapsi/dupf/dirtree"
 )
 
-func areObjectsEqual(a, b interface{}) bool {
-	if reflect.DeepEqual(a, b) {
-		return true
-	}
-
-	if reflect.ValueOf(a) == reflect.ValueOf(b) {
-		return true
-	}
-
-	if fmt.Sprintf("%#v", a) == fmt.Sprintf("%#v", b) {
-		return true
-	}
-
-	return false
-}
-
-func assertEqual(t *testing.T, a, b interface{}) {
-	if !areObjectsEqual(a, b) {
-		t.Errorf("Not equal (expected: '%#v', but was: '%#v')", a, b)
-	}
-}
-
 func TestFindDuplicates(t *testing.T) {
-	files := []*dirtree.FileInfo{
+	files := []*FileInfo{
 		{Path: "root/subdir1/a.txt", Hash: []byte{0x1, 0x2, 0x3, 0x4}},
 		{Path: "root/subdir1/b.txt", Hash: []byte{0x2, 0x3, 0x4, 0x5}},
 		{Path: "root/subdir2/c.txt", Hash: []byte{0x3, 0x4, 0x5, 0x6}},
@@ -42,7 +16,7 @@ func TestFindDuplicates(t *testing.T) {
 		{Path: "root/subdir4/h.txt", Hash: []byte{0x5, 0x6, 0x7, 0x8}},
 	}
 
-	dirTree := dirtree.DirTree{RootPath: "root", Files: files}
+	dirTree := DirTree{RootPath: "root", Files: files}
 
 	duplicates := NewDuplicates(&dirTree)
 

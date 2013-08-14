@@ -1,4 +1,4 @@
-package dirtree
+package dupfinder
 
 import (
 	"crypto/md5"
