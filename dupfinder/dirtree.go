@@ -9,16 +9,16 @@ import (
 )
 
 type DirTree struct {
-	RootPath string
-	Files []*FileInfo
+	rootPath string
+	files []*FileInfo
 }
 
 func NewDirTree(rootDir string) *DirTree {
-	return &DirTree{RootPath: rootDir, Files: walkDirectory(rootDir)}
+	return &DirTree{rootPath: rootDir, files: walkDirectory(rootDir)}
 }
 
 func (dt *DirTree) FileCount() int {
-	return len((*dt).Files)
+	return len((*dt).files)
 }
 
 func walkDirectory(rootDir string) (result []*FileInfo) {
@@ -39,16 +39,16 @@ func walkDirectory(rootDir string) (result []*FileInfo) {
 }
 
 type FileInfo struct {
-	Path string
-	Hash []byte
+	path string
+	hash []byte
 }
 
 func NewFileInfo(path string) *FileInfo {
-	return &FileInfo{Path: path, Hash: getHash(path)}
+	return &FileInfo{path: path, hash: getHash(path)}
 }
 
 func (fi *FileInfo) GetHashstring() string {
-	return fmt.Sprintf("%x", fi.Hash)
+	return fmt.Sprintf("%x", fi.hash)
 }
 
 var hash = md5.New()

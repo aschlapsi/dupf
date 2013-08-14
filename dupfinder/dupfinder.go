@@ -1,19 +1,19 @@
 package dupfinder
 
 type Duplicates struct {
-	Items []*DuplicateItems
+	items []*DuplicateItems
 }
 
 type DuplicateItems struct {
-	Key string
-	Files []*FileInfo
+	key string
+	files []*FileInfo
 }
 
 func NewDuplicates(dirTree *DirTree) *Duplicates {
-	duplicates := &Duplicates{Items: make([]*DuplicateItems, 0)}
+	duplicates := &Duplicates{items: make([]*DuplicateItems, 0)}
 	fileMap := make(map[string][]*FileInfo)
 
-	for _, fi := range dirTree.Files {
+	for _, fi := range dirTree.files {
 		hashstr := fi.GetHashstring()
 
 		files, ok := fileMap[hashstr]
@@ -26,7 +26,7 @@ func NewDuplicates(dirTree *DirTree) *Duplicates {
 
 	for key, fileList := range fileMap {
 		if len(fileList) > 1 {
-			duplicates.Items = append(duplicates.Items, &DuplicateItems{Key: key, Files: fileList})
+			duplicates.items = append(duplicates.items, &DuplicateItems{key: key, files: fileList})
 		}
 	}
 
@@ -34,5 +34,5 @@ func NewDuplicates(dirTree *DirTree) *Duplicates {
 }
 
 func (dup *Duplicates) Count() int {
-	return len(dup.Items)
+	return len(dup.items)
 }
