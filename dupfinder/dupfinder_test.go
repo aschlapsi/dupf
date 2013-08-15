@@ -16,7 +16,7 @@ func TestNewDuplicates(t *testing.T) {
 		{path: "root/subdir4/h.txt", hash: []byte{0x5, 0x6, 0x7, 0x8}, size: 1},
 	}
 
-	dirTree := DirTree{rootPath: "root", files: files}
+	dirTree := DirTree{files: files}
 
 	duplicates := NewDuplicates(&dirTree)
 
@@ -44,7 +44,7 @@ func TestNewDuplicatesStats(t *testing.T) {
 		{path: "root/subdir4/h.txt", hash: []byte{0x5, 0x6, 0x7, 0x8}, size: 1},
 	}
 
-	dirTree := DirTree{rootPath: "root", files: files}
+	dirTree := DirTree{files: files}
 	duplicates := NewDuplicates(&dirTree)
 
 	stats := duplicates.Stats()
@@ -67,7 +67,7 @@ func TestNewDuplicatesWithSameHashButDifferenzFileSize(t *testing.T) {
 		{path: "root/subdir4/h.txt", hash: []byte{0x1, 0x2, 0x3, 0x4}, size: 8},
 	}
 
-	dirTree := DirTree{rootPath: "root", files: files}
+	dirTree := DirTree{files: files}
 
 	duplicates := NewDuplicates(&dirTree)
 

@@ -2,13 +2,14 @@ package dupfinder
 
 import (
 	"fmt"
+	"path/filepath"
 	"testing"
 )
 
 func TestNewFileInfo(t *testing.T) {
 	fi := NewFileInfo("testdir/subdir1/a.txt")
 
-	assertEqual(t, "testdir/subdir1/a.txt", fi.path)
+	assertSuffix(t, "testdir/subdir1/a.txt", fi.path)
 	assertEqual(t, "0cc175b9c0f1b6a831c399e269772661", fi.GetHashstring())
 }
 
@@ -16,11 +17,21 @@ func TestWalkDirectory(t *testing.T) {
 	dirTree := NewDirTree("testdir")
 
 	assertEqual(t, 5, dirTree.FileCount())
-	assertEqual(t, "testdir/subdir1/a.txt", dirTree.files[0].path)
-	assertEqual(t, "testdir/subdir1/b.txt", dirTree.files[1].path)
-	assertEqual(t, "testdir/subdir2/b.txt", dirTree.files[2].path)
-	assertEqual(t, "testdir/subdir2/c.txt", dirTree.files[3].path)
-	assertEqual(t, "testdir/subdir2/d.txt", dirTree.files[4].path)
+	assertSuffix(t, "testdir/subdir1/a.txt", dirTree.files[0].path)
+	assertSuffix(t, "testdir/subdir1/b.txt", dirTree.files[1].path)
+	assertSuffix(t, "testdir/subdir2/b.txt", dirTree.files[2].path)
+	assertSuffix(t, "testdir/subdir2/c.txt", dirTree.files[3].path)
+	assertSuffix(t, "testdir/subdir2/d.txt", dirTree.files[4].path)
+}
+
+func TestFilePathsAreAbsolute(t *testing.T) {
+	dirTree := NewDirTree("testdir")
+
+	assertTrue(t, filepath.IsAbs(dirTree.files[0].path), "Filepath must be absolute.")
+	assertTrue(t, filepath.IsAbs(dirTree.files[1].path), "Filepath must be absolute.")
+	assertTrue(t, filepath.IsAbs(dirTree.files[2].path), "Filepath must be absolute.")
+	assertTrue(t, filepath.IsAbs(dirTree.files[3].path), "Filepath must be absolute.")
+	assertTrue(t, filepath.IsAbs(dirTree.files[4].path), "Filepath must be absolute.")
 }
 
 func TestHashCodes(t *testing.T) {
@@ -47,4 +58,18 @@ func TestFileSizes(t *testing.T) {
 	assertEqual(t,  1, dirTree.files[2].size)
 	assertEqual(t,  1, dirTree.files[3].size)
 	assertEqual(t, 12, dirTree.files[4].size)
+}
+
+func TestMergeTrees(t *testing.T) {
+	dirTree1 := NewDirTree("testdir/subdir1")
+	dirTree2 := NewDirTree("testdir/subdir2")
+
+	dirTree := dirTree1.MergeWith(dirTree2)
+
+	assertEqual(t, 5, dirTree.FileCount())
+	assertSuffix(t, "testdir/subdir1/a.txt", dirTree.files[0].path)
+	assertSuffix(t, "testdir/subdir1/b.txt", dirTree.files[1].path)
+	assertSuffix(t, "testdir/subdir2/b.txt", dirTree.files[2].path)
+	assertSuffix(t, "testdir/subdir2/c.txt", dirTree.files[3].path)
+	assertSuffix(t, "testdir/subdir2/d.txt", dirTree.files[4].path)
 }

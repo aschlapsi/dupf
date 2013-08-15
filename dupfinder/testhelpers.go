@@ -3,6 +3,7 @@ package dupfinder
 import (
 	"fmt"
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -25,5 +26,17 @@ func areObjectsEqual(a, b interface{}) bool {
 func assertEqual(t *testing.T, a, b interface{}) {
 	if !areObjectsEqual(a, b) {
 		t.Errorf("Not equal (expected: '%#v', but was: '%#v')", a, b)
+	}
+}
+
+func assertSuffix(t *testing.T, a, b string) {
+	if !strings.HasSuffix(b, a) {
+		t.Errorf("Expected string to end with %s (string: %s)", a, b)
+	}
+}
+
+func assertTrue(t *testing.T, r bool, message string) {
+	if !r {
+		t.Error(message)
 	}
 }

@@ -9,16 +9,20 @@ import (
 )
 
 type DirTree struct {
-	rootPath string
 	files []*FileInfo
 }
 
 func NewDirTree(rootDir string) *DirTree {
-	return &DirTree{rootPath: rootDir, files: walkDirectory(rootDir)}
+	return &DirTree{files: walkDirectory(rootDir)}
 }
 
 func (dt *DirTree) FileCount() int {
 	return len((*dt).files)
+}
+
+func (dt *DirTree) MergeWith(other *DirTree) *DirTree {
+	files := append(dt.files, other.files...)
+	return &DirTree{files: files}
 }
 
 func walkDirectory(rootDir string) (result []*FileInfo) {
@@ -27,8 +31,13 @@ func walkDirectory(rootDir string) (result []*FileInfo) {
 			return err
 		}
 
+		absPath, err := filepath.Abs(path)
+		if err != nil {
+			absPath = path
+		}
+
 		if !fileInfo.IsDir() {
-			result = append(result, NewFileInfo(path))
+			result = append(result, NewFileInfo(absPath))
 		}
 
 		return nil
