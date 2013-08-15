@@ -60,11 +60,10 @@ func TestFileSizes(t *testing.T) {
 	assertEqual(t, 12, dirTree.files[4].size)
 }
 
-func TestMergeTrees(t *testing.T) {
-	dirTree1 := NewDirTree("testdir/subdir1")
-	dirTree2 := NewDirTree("testdir/subdir2")
+func TestAppendDir(t *testing.T) {
+	dirTree := NewDirTree("testdir/subdir1")
 
-	dirTree := dirTree1.MergeWith(dirTree2)
+	dirTree.AppendDir("testdir/subdir2")
 
 	assertEqual(t, 5, dirTree.FileCount())
 	assertSuffix(t, "testdir/subdir1/a.txt", dirTree.files[0].path)

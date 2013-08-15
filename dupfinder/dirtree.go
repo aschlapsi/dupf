@@ -20,9 +20,9 @@ func (dt *DirTree) FileCount() int {
 	return len((*dt).files)
 }
 
-func (dt *DirTree) MergeWith(other *DirTree) *DirTree {
-	files := append(dt.files, other.files...)
-	return &DirTree{files: files}
+func (dt *DirTree) AppendDir(dir string) {
+	newFiles := walkDirectory(dir)
+	dt.files = append(dt.files, newFiles...)
 }
 
 func walkDirectory(rootDir string) (result []*FileInfo) {
