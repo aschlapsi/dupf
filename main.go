@@ -23,7 +23,7 @@ func main() {
 			break;
 		}
 
-		fmt.Printf("\033[1K\rProcessing file %s.", filePath)
+		fmt.Printf("\033[1K\rProcessing file %s", filePath)
 	}
 
 	fmt.Println()
