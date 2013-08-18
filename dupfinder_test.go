@@ -62,6 +62,27 @@ func TestHashcodes(t *testing.T) {
 	assertEqual(t, "d4c7ede6154c1efe72fd8b10cac048b0", search.files[4].Hashstring())
 }
 
+func TestTotalFileSize(t *testing.T) {
+	search := findTestDuplicates()
+
+	assertEqual(t, 1 + 1 + 1 + 1 + 12, search.TotalFileSize())
+}
+
+func TestTotalFileCount(t *testing.T) {
+	search := findTestDuplicates()
+
+	assertEqual(t, 5, search.FileCount())
+}
+
+func TestFoundDuplicates(t *testing.T) {
+	search := findTestDuplicates()
+
+	assertEqual(t, 1, search.Duplicates().Count())
+	assertEqual(t, 2, search.Duplicates().TotalFileSize())
+	assertSuffix(t, "dupfinder/testdir/subdir1/b.txt", search.Duplicates().Groups()[0][0].Path())
+	assertSuffix(t, "dupfinder/testdir/subdir2/b.txt", search.Duplicates().Groups()[0][1].Path())
+}
+
 func findTestDuplicates() *SearchProgress {
 	search := FindDuplicates("dupfinder/testdir")
 
