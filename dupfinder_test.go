@@ -41,13 +41,7 @@ func TestWalksAllDirectories(t *testing.T) {
 }
 
 func TestFiles(t *testing.T) {
-	search := FindDuplicates("dupfinder/testdir")
-
-	for {
-		if (<-search.Progress()) == "" {
-			break
-		}		
-	}
+	search := findTestDuplicates()
 
 	assertEqual(t, 5, len(search.files))
 	assertSuffix(t, "dupfinder/testdir/subdir1/a.txt", search.files[0].path)
@@ -58,13 +52,7 @@ func TestFiles(t *testing.T) {
 }
 
 func TestHashcodes(t *testing.T) {
-	search := FindDuplicates("dupfinder/testdir")
-
-	for {
-		if (<-search.Progress()) == "" {
-			break
-		}		
-	}
+	search := findTestDuplicates()
 
 	assertEqual(t, 5, len(search.files))
 	assertEqual(t, "0cc175b9c0f1b6a831c399e269772661", search.files[0].Hashstring())
@@ -72,6 +60,18 @@ func TestHashcodes(t *testing.T) {
 	assertEqual(t, "92eb5ffee6ae2fec3ad71c777531578f", search.files[2].Hashstring())
 	assertEqual(t, "4a8a08f09d37b73795649038408b5f33", search.files[3].Hashstring())
 	assertEqual(t, "d4c7ede6154c1efe72fd8b10cac048b0", search.files[4].Hashstring())
+}
+
+func findTestDuplicates() *SearchProgress {
+	search := FindDuplicates("dupfinder/testdir")
+
+	for {
+		if (<-search.Progress()) == "" {
+			break
+		}
+	}
+
+	return search
 }
 
 func areObjectsEqual(a, b interface{}) bool {
