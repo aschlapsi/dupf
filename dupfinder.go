@@ -3,7 +3,7 @@ package main
 import (
 	"crypto/md5"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"path/filepath"
 )
@@ -142,20 +142,38 @@ var hash = md5.New()
 func getHash(path string) []byte {
 	hash.Reset()
 
-	// TODO: generate hash using smaller byte blocks
-
-	content, err := ioutil.ReadFile(path)
+	file, err := os.Open(path)
 	if err != nil {
 		// TODO: better error handling
-		fmt.Printf("Error while reading file %s: %s\n", path, err)
+		fmt.Printf("Error while opening file %s: %s\n", path, err)
 		return nil
 	}
+	defer file.Close()
 
-	_, err = hash.Write(content)
-	if err != nil {
-		// TODO: better error handling
-		fmt.Printf("Error while generating hash for file %s: %s\n", path, err)
-		return nil
+	buffer := make([]byte, 1024)
+
+	for {	
+		n, err := file.Read(buffer)
+		if err == io.EOF {
+			if n > 0 {
+				hash.Write(buffer[:n])
+			}
+			break
+		}
+		if err != nil {
+			// TODO: better error handling
+			fmt.Printf("Error while reading from file %s: %s\n", path, err)
+			return nil
+		}
+
+		if n > 0 {
+			_, err = hash.Write(buffer[:n])
+			if err != nil {
+				// TODO: better error handling
+				fmt.Printf("Error while generating hash for file %s: %s\n", path, err)
+				return nil
+			}
+		}
 	}
 
 	return hash.Sum(nil)
