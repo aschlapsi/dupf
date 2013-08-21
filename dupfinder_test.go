@@ -65,7 +65,7 @@ func TestHashcodes(t *testing.T) {
 func TestTotalFileSize(t *testing.T) {
 	search := findTestDuplicates()
 
-	assertEqual(t, 1 + 1 + 1 + 1 + 12, search.TotalFileSize())
+	assertEqual(t, 1+1+1+1+12, search.TotalFileSize())
 }
 
 func TestTotalFileCount(t *testing.T) {

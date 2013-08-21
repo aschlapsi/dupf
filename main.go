@@ -22,7 +22,7 @@ func main() {
 	for {
 		filePath := <-search.Progress()
 		if filePath == "" {
-			break;
+			break
 		}
 
 		fmt.Printf("\033[1K\rProcessing file %s", filePath)
@@ -39,7 +39,7 @@ func showResult(search *SearchProgress, duration time.Duration) {
 	fmt.Println()
 	fmt.Printf("Found %d duplicate groups:\n", duplicates.Count())
 	for i, group := range duplicates.Groups() {
-		fmt.Printf("    - Group #%d\n", i + 1)
+		fmt.Printf("    - Group #%d\n", i+1)
 		for _, file := range group {
 			fmt.Printf("          - %s\n", file.Path())
 		}

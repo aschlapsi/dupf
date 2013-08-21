@@ -9,11 +9,11 @@ import (
 )
 
 type SearchProgress struct {
-	progress chan string
-	files []*FileInfo
+	progress      chan string
+	files         []*FileInfo
 	totalFileSize int64
-	duplicateMap map[string][]FileInfo
-	duplicates *Duplicates
+	duplicateMap  map[string][]FileInfo
+	duplicates    *Duplicates
 }
 
 func (sp *SearchProgress) Progress() <-chan string {
@@ -84,7 +84,7 @@ func (sp *SearchProgress) close() {
 
 type Duplicates struct {
 	totalDuplicateFileSize int64
-	duplicateGroups [][]FileInfo
+	duplicateGroups        [][]FileInfo
 }
 
 func (d Duplicates) Count() int {
@@ -150,31 +150,12 @@ func getHash(path string) []byte {
 	}
 	defer file.Close()
 
-	buffer := make([]byte, 1024)
-
-	for {	
-		n, err := file.Read(buffer)
-		if err == io.EOF {
-			if n > 0 {
-				hash.Write(buffer[:n])
-			}
-			break
-		}
-		if err != nil {
-			// TODO: better error handling
-			fmt.Printf("Error while reading from file %s: %s\n", path, err)
-			return nil
-		}
-
-		if n > 0 {
-			_, err = hash.Write(buffer[:n])
-			if err != nil {
-				// TODO: better error handling
-				fmt.Printf("Error while generating hash for file %s: %s\n", path, err)
-				return nil
-			}
-		}
-	}
+	_, err = io.Copy(hash, file)
+	if err != nil {
+		// TODO: better error handling
+		fmt.Printf("Error while generating hash for file %s: %s\n", path, err)
+		return nil
+	}	
 
 	return hash.Sum(nil)
 }
